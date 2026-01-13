@@ -1,6 +1,8 @@
 package com.ecommerce.Ecommerce_App.controller;
 
 import com.ecommerce.Ecommerce_App.Model.Category;
+import com.ecommerce.Ecommerce_App.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -10,20 +12,23 @@ import java.util.List;
 @RequestMapping("/api")
 public class CategoryController {
 
-    //dummy list to initially store teh categories
-    List<Category> categories = new ArrayList<>();
+    //injecting object of category service
+    private final CategoryService categoryService;
+    @Autowired
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     // method to fetch all categories
     @GetMapping("/public/categories")
     public List<Category> getAllCategories(){
-        return categories;
+        return categoryService.getAllCategories();
     }
 
     //method to store teh category
     @PostMapping("/admin/category")
     public String addCategory(@RequestBody Category category){
-        categories.add(category);
-         return "Category Added Successfully !!";
+        return categoryService.saveCategory(category);
     }
 
 }
