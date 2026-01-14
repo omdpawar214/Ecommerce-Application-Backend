@@ -29,16 +29,17 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public void deleteCategory(int id) {
+    public String deleteCategory(long id) {
         Category category = null;
-
-        //to find and remove category by id
-        for(Category category1: categories){
-            if(category1.getCategoryId() == id){
-                category = category1;
-            }
+        if (id > IdNo || id <= 0) {
+            return "Category not Found";
         }
-        categories.remove(category);
+            for (Category category1 : categories) {
+                if (category1.getCategoryId() == id) {
+                    category = category1;
+                }
+            }
+            categories.remove(category);
+            return "Category with Id :"+ id + " is deleted successfully!!";
     }
-
 }
