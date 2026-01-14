@@ -31,4 +31,11 @@ public class CategoryController {
         return categoryService.saveCategory(category);
     }
 
+    //method to delete category by id
+    @DeleteMapping("/admin/categories/{Id}")
+    public String deleteCategory(@PathVariable int Id){
+        categoryService.deleteCategory(Id);
+        return "Category with Id :"+ Id + " is deleted successfully!!";
+    }
+
 }

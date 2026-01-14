@@ -12,6 +12,9 @@ public class CategoryServiceImpl implements CategoryService{
     //dummy list to initially store teh categories
     List<Category> categories = new ArrayList<>();
 
+    //creating variable to track category id
+    long IdNo = 0L;
+
     @Override
     public List<Category> getAllCategories() {
         return categories;
@@ -19,7 +22,23 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public String saveCategory(Category category) {
+        IdNo++;
+        category.setCategoryId(IdNo);
         categories.add(category);
         return "Category Added Successfully !!";
     }
+
+    @Override
+    public void deleteCategory(int id) {
+        Category category = null;
+
+        //to find and remove category by id
+        for(Category category1: categories){
+            if(category1.getCategoryId() == id){
+                category = category1;
+            }
+        }
+        categories.remove(category);
+    }
+
 }
