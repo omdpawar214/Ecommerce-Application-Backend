@@ -1,7 +1,9 @@
 package com.ecommerce.Ecommerce_App.service;
 
 import com.ecommerce.Ecommerce_App.Model.Category;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +33,10 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public String deleteCategory(long id) {
         Category category = null;
+
         if (id > IdNo || id <= 0) {
-            return "Category not Found";
+            // throwing error if category not fount with given id
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Category not Found");
         }
             for (Category category1 : categories) {
                 if (category1.getCategoryId() == id) {
