@@ -9,4 +9,5 @@ public interface CategoryService {
      List<Category> getAllCategories();
      String saveCategory(Category category);
      String deleteCategory(long id);
+     String updateCategory(Category category,long categoryId);
 }

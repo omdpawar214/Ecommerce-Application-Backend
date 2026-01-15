@@ -46,4 +46,24 @@ public class CategoryServiceImpl implements CategoryService{
             categories.remove(category);
             return "Category with Id :"+ id + " is deleted successfully!!";
     }
+
+    @Override
+    public String updateCategory(Category category , long categoryId) {
+         //find the category
+        Category foundCategory = null;
+
+        if (categoryId > IdNo || categoryId <= 0) {
+            // throwing error if category not fount with given id
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Category not Found");
+        }
+        for (Category category1 : categories) {
+            if (category1.getCategoryId() == categoryId) {
+                foundCategory = category1;
+            }
+        }
+        //set required changes
+        foundCategory.setName(category.getName());
+        //save it to collection
+        return "Category Updated Successfully !!";
+    }
 }
