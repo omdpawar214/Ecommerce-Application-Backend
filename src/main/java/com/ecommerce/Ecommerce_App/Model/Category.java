@@ -1,8 +1,16 @@
 package com.ecommerce.Ecommerce_App.Model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Category {
 
     //attributes of the category class
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long categoryId;
     private String name;
     //Getters and Setters
