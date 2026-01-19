@@ -1,5 +1,6 @@
 package com.ecommerce.Ecommerce_App.service;
 
+import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.Ecommerce_App.Model.Category;
 import com.ecommerce.Ecommerce_App.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public String deleteCategory(long id){
+    public String deleteCategory(long id) {
         // Method -1 to delete category
         Optional<Category> category = categoryRepository.findById(id);
         if(category.isPresent()){
@@ -38,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService{
             categoryRepository.delete(foundCategory);
             return "Category with Id :"+ id + " is deleted successfully!!";
         }else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found");
+            throw new ResourceNotFoundException("category","categoryId",id);
         }
 
         // Method -2 to delete category
@@ -55,9 +56,8 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public String updateCategory(Category category , long categoryId) {
          //find the category
-        Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(()-> new ResponseStatusException(
-          HttpStatus.NOT_FOUND,"Category Not found with given id"
-        ));
+        Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException(
+                "category","categoryId",categoryId));
         //set required changes
         foundCategory.setName(category.getName());
         //save it to collection
