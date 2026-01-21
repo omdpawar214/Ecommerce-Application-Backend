@@ -1,5 +1,6 @@
 package com.ecommerce.Ecommerce_App.controller;
 
+import com.ecommerce.Ecommerce_App.DTOs.CategoryDTO;
 import com.ecommerce.Ecommerce_App.DTOs.CategoryResponse;
 import com.ecommerce.Ecommerce_App.Model.Category;
 import com.ecommerce.Ecommerce_App.service.CategoryService;
@@ -32,9 +33,8 @@ public class CategoryController {
 
     //method to store teh category
     @PostMapping("/admin/category")
-    public ResponseEntity<String > addCategory( @Valid @RequestBody Category category){
-        String msg =categoryService.saveCategory(category);
-        return new ResponseEntity<>(msg , HttpStatus.CREATED);
+    public ResponseEntity<CategoryDTO> addCategory( @Valid @RequestBody CategoryDTO categoryDTO){
+        return new ResponseEntity<>( categoryService.saveCategory(categoryDTO) , HttpStatus.CREATED);
     }
 
     //method to delete category by id

@@ -44,15 +44,17 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public String saveCategory(Category category) {
+    public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
         //checking for duplicates in repository
-        String categoryName = category.getName();
+        String categoryName = categoryDTO.getName();
         Optional<Category> foundCategory = categoryRepository.findByName(categoryName);
         if(foundCategory.isPresent()){
             throw new ApiException("This Category has already been created!");
         }
+        //converting category dto to category entity to make db exchange
+        Category category = modelMapper.map(categoryDTO,Category.class);
         categoryRepository.save(category);
-        return "Category Added Successfully !!";
+        return categoryDTO;
     }
 
     @Override
@@ -70,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public CategoryResponse updateCategory(Category category , long categoryId) {
+    public String updateCategory(Category category , long categoryId) {
          //find the category
         Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException(
                 "category","categoryId",categoryId));
