@@ -1,5 +1,6 @@
 package com.ecommerce.Ecommerce_App.controller;
 
+import com.ecommerce.Ecommerce_App.DTOs.CategoryResponse;
 import com.ecommerce.Ecommerce_App.Model.Category;
 import com.ecommerce.Ecommerce_App.service.CategoryService;
 import jakarta.validation.Valid;
@@ -25,7 +26,7 @@ public class CategoryController {
 
     // method to fetch all categories
     @GetMapping("/public/categories")
-    public ResponseEntity<List<Category>>  getAllCategories(){
+    public ResponseEntity<CategoryResponse>  getAllCategories(){
         return new ResponseEntity<>(categoryService.getAllCategories() , HttpStatus.OK);
     }
 

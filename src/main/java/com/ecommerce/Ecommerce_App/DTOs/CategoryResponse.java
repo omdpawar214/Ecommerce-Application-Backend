@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CategoryResponse {
-    List<CategoryDTO> content;
+   private List<CategoryDTO> content;
 }

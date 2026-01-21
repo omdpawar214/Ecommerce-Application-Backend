@@ -1,9 +1,12 @@
 package com.ecommerce.Ecommerce_App.service;
 
+import com.ecommerce.Ecommerce_App.DTOs.CategoryDTO;
+import com.ecommerce.Ecommerce_App.DTOs.CategoryResponse;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ApiException;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.Ecommerce_App.Model.Category;
 import com.ecommerce.Ecommerce_App.repository.CategoryRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,10 +22,25 @@ public class CategoryServiceImpl implements CategoryService{
     //injecting repository layers dependency using field injection
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public CategoryResponse getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
+        if(categories.isEmpty()){
+            throw new ApiException("List is Empty ! cannot Generate Response");
+        }
+        //converting Category list to category dto list
+        List<CategoryDTO> categoryDTOSlist = new ArrayList<>();
+        for(Category category : categories){
+            categoryDTOSlist.add(modelMapper.map(category,CategoryDTO.class));
+        }
+        //creating Category Response
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setContent(categoryDTOSlist);
+
+        return categoryResponse;
     }
 
     @Override
@@ -31,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService{
         String categoryName = category.getName();
         Optional<Category> foundCategory = categoryRepository.findByName(categoryName);
         if(foundCategory.isPresent()){
-            throw new ApiException();
+            throw new ApiException("This Category has already been created!");
         }
         categoryRepository.save(category);
         return "Category Added Successfully !!";
@@ -39,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public String deleteCategory(long id) {
-        // Method -1 to delete category
+
         Optional<Category> category = categoryRepository.findById(id);
         if(category.isPresent()){
             Category foundCategory = category.get();
@@ -49,19 +67,10 @@ public class CategoryServiceImpl implements CategoryService{
             throw new ResourceNotFoundException("category","categoryId",id);
         }
 
-        // Method -2 to delete category
-//          Category foundCategory = categoryRepository.findById(id).orElseThrow(()-> new ResponseStatusException(
-//          HttpStatus.NOT_FOUND,"Category Not found with given id"
-//        ));
-//        categoryRepository.delete(foundCategory);
-
-        //method -3 to delete category
-         // categoryRepository.deleteById(id);
-            //return "Category with Id :"+ id + " is deleted successfully!!";
     }
 
     @Override
-    public String updateCategory(Category category , long categoryId) {
+    public CategoryResponse updateCategory(Category category , long categoryId) {
          //find the category
         Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException(
                 "category","categoryId",categoryId));
