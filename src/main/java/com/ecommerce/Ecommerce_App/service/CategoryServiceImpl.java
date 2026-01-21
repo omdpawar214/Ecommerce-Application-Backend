@@ -54,6 +54,7 @@ public class CategoryServiceImpl implements CategoryService{
         //converting category dto to category entity to make db exchange
         Category category = modelMapper.map(categoryDTO,Category.class);
         categoryRepository.save(category);
+        categoryDTO.setCategoryId(category.getCategoryId());
         return categoryDTO;
     }
 
