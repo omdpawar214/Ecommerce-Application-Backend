@@ -27,8 +27,11 @@ public class CategoryController {
 
     // method to fetch all categories
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse>  getAllCategories(){
-        return new ResponseEntity<>(categoryService.getAllCategories() , HttpStatus.OK);
+    public ResponseEntity<CategoryResponse>  getAllCategories(
+            @RequestParam(name = "PageNumber") Integer PageNumber,
+            @RequestParam(name = "PageSize") Integer PageSize
+    ){
+        return new ResponseEntity<>(categoryService.getAllCategories(PageNumber , PageSize) , HttpStatus.OK);
     }
 
     //method to store teh category

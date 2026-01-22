@@ -1,8 +1,8 @@
 package com.ecommerce.Ecommerce_App.ExceptionHandler;
 
 public class ApiException extends RuntimeException {
-    public ApiException()
+    public ApiException(String message)
     {
-        super(" Category Creation Failed !!! The Category with this Name Already Exists !!");
+        super(message);
     }
 }
