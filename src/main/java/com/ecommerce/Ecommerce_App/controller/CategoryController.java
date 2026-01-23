@@ -29,10 +29,12 @@ public class CategoryController {
     // method to fetch all categories
     @GetMapping("/public/categories")
     public ResponseEntity<CategoryResponse>  getAllCategories(
-            @RequestParam(name = "PageNumber", defaultValue = "AppConstants.Page_Number" , required = false) Integer PageNumber,
-            @RequestParam(name = "PageSize" ,defaultValue ="AppConstants.Page_Size" , required = false) Integer PageSize
-    ){
-        return new ResponseEntity<>(categoryService.getAllCategories(PageNumber , PageSize) , HttpStatus.OK);
+            @RequestParam(name = "PageNumber", defaultValue = AppConstants.Page_Number , required = false) Integer PageNumber,
+            @RequestParam(name = "PageSize" ,defaultValue =AppConstants.Page_Size , required = false) Integer PageSize,
+            @RequestParam(name = "sortBy" , defaultValue = AppConstants.Sort_Categories_By ,required = false) String sortBy,
+            @RequestParam(name = "sortOrder" , defaultValue = AppConstants.Sort_Categories_Order ,required = false) String sortOrder
+            ){
+        return new ResponseEntity<>(categoryService.getAllCategories(PageNumber , PageSize ,sortBy ,sortOrder) , HttpStatus.OK);
     }
 
     //method to store teh category
