@@ -1,6 +1,7 @@
 package com.ecommerce.Ecommerce_App.controller;
 
 import com.ecommerce.Ecommerce_App.DTOs.ProductDTO;
+import com.ecommerce.Ecommerce_App.DTOs.ProductResponse;
 import com.ecommerce.Ecommerce_App.Model.Product;
 import com.ecommerce.Ecommerce_App.service.ProductService;
 import jakarta.validation.Valid;
@@ -25,5 +26,11 @@ public class ProductController {
     public ResponseEntity<ProductDTO> createProduct( @Valid @RequestBody Product product ,
                                                     @PathVariable Long categoryId){
         return new ResponseEntity<>(productService.createProduct(product , categoryId), HttpStatus.CREATED);
+    }
+
+    //endpoint to get all the products
+    @GetMapping("/public/products")
+    public ResponseEntity<ProductResponse> getAllProducts (){
+        return new ResponseEntity<>(productService.gellAll() , HttpStatus.OK);
     }
 }
