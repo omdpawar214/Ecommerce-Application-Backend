@@ -12,8 +12,8 @@ public class GlobalExceptionHandler{
 
     @ExceptionHandler
     public ResponseEntity<String> errorResponse(MethodArgumentNotValidException e){
-        String errorMessage = e.getBindingResult().getFieldError().getDefaultMessage();
-        return new ResponseEntity<>(errorMessage,HttpStatus.BAD_REQUEST);
+        //String errorMessage = e.getBindingResult().getFieldError().getDefaultMessage();
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

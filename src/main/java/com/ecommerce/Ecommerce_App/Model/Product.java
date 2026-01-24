@@ -21,12 +21,11 @@ public class Product {
     private String productName;
     @NotBlank
     private String productDescription;
-    @NotNull
-    private double price;
-    @NotNull
-    private double specialPrice;
-    @NotNull
+    private Double price;
+    private Double specialPrice;
     private Integer quantity;
+    private double discount;
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "category_Id")
