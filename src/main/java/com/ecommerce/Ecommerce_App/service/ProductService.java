@@ -8,4 +8,6 @@ public interface ProductService {
     ProductDTO createProduct(Product product, Long categoryId);
 
     ProductResponse gellAll();
+
+    ProductResponse getProductsByCategoryName(String name);
 }

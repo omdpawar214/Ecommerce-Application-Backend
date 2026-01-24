@@ -55,4 +55,19 @@ public class ProductServiceImpl implements ProductService{
         response.setContent(productDTOS);
         return response;
     }
+
+    @Override
+    public ProductResponse getProductsByCategoryName(String name) {
+        //fetch all the products from repository
+        List<Product> products = productRepository.findByCategoryName(name);
+        //convert it to productDTO objects
+        List<ProductDTO> productDTOS = new ArrayList<>();
+        for(Product product : products){
+            productDTOS.add(modelMapper.map(product,ProductDTO.class));
+        }
+        //return the response
+        ProductResponse response = new ProductResponse();
+        response.setContent(productDTOS);
+        return response;
+    }
 }

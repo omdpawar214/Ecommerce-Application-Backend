@@ -33,4 +33,10 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getAllProducts (){
         return new ResponseEntity<>(productService.gellAll() , HttpStatus.OK);
     }
+
+    //get products by category name
+    @GetMapping("/public/productsByCategory")
+    public ResponseEntity<ProductResponse> getProductsByCategoryName (@RequestParam(name = "name") String name){
+        return new ResponseEntity<>(productService.getProductsByCategoryName(name) , HttpStatus.OK);
+    }
 }
