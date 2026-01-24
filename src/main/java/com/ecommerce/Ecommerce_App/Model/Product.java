@@ -22,9 +22,9 @@ public class Product {
     @NotBlank
     private String productDescription;
     @NotNull
-    private Integer price;
+    private double price;
     @NotNull
-    private Integer specialPrice;
+    private double specialPrice;
     @NotNull
     private Integer quantity;
 
