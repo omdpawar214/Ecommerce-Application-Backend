@@ -10,4 +10,6 @@ public interface ProductService {
     ProductResponse gellAll();
 
     ProductResponse getProductsByCategoryName(String name);
+
+    ProductResponse findBykeyword(String keyword);
 }
