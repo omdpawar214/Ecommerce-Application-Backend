@@ -24,6 +24,8 @@ import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService{
+    @Autowired
+    private FileService fileService;
     private final ProductRepository productRepository;
     private final CategoryRepository CategoryRepository;
     private final  ModelMapper modelMapper;
@@ -135,7 +137,7 @@ public class ProductServiceImpl implements ProductService{
         );
          //upload image form server
         //get the file name
-        String FileName = uploadImage(path,image);
+        String FileName = fileService.uploadImage(path,image);
         //get the new file name to the product
         product.setImage(FileName);
         //return the dto in appropriate format
@@ -144,24 +146,4 @@ public class ProductServiceImpl implements ProductService{
         return modelMapper.map(updatedProduct,ProductDTO.class);
     }
 
-    private String uploadImage(String path, MultipartFile file) throws IOException {
-        //get original file name
-        String originalFileName = file.getOriginalFilename();
-
-        //make a unique file name to resolve conflicts
-        String randomId = UUID.randomUUID().toString();
-        String filename = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf(".")));
-        String filePath = path + File.separator + filename;
-
-        //check if path exists
-        File folder = new File(path);
-        if (!folder.exists())
-            folder.mkdir();
-
-        //upload to server
-        Files.copy(file.getInputStream(), Paths.get(filePath));
-
-        //return filename
-        return filename;
-    }
 }
