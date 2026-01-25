@@ -23,9 +23,9 @@ public class ProductController {
 
     //endpoint to create product
     @PostMapping("/admin/category/{categoryId}/product")
-    public ResponseEntity<ProductDTO> createProduct( @Valid @RequestBody Product product ,
+    public ResponseEntity<ProductDTO> createProduct( @Valid @RequestBody ProductDTO productDTO ,
                                                     @PathVariable Long categoryId){
-        return new ResponseEntity<>(productService.createProduct(product , categoryId), HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.createProduct(productDTO , categoryId), HttpStatus.CREATED);
     }
 
     //endpoint to get all the products
@@ -49,8 +49,8 @@ public class ProductController {
     //endpoint to update product
     @PutMapping("/products/{productId}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId,
-                                                    @RequestBody Product product){
-        return new ResponseEntity<>(productService.updateProduct(productId,  product),HttpStatus.ACCEPTED);
+                                                    @RequestBody ProductDTO productDTO){
+        return new ResponseEntity<>(productService.updateProduct(productId,  productDTO),HttpStatus.ACCEPTED);
     }
 
     //endpoint to delete product
