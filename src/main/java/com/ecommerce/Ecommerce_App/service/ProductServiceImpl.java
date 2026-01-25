@@ -2,6 +2,7 @@ package com.ecommerce.Ecommerce_App.service;
 
 import com.ecommerce.Ecommerce_App.DTOs.ProductDTO;
 import com.ecommerce.Ecommerce_App.DTOs.ProductResponse;
+import com.ecommerce.Ecommerce_App.ExceptionHandler.ApiException;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.Ecommerce_App.Model.Category;
 import com.ecommerce.Ecommerce_App.Model.Product;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -39,7 +41,14 @@ public class ProductServiceImpl implements ProductService{
     private String path;
 
     @Override
-    public ProductDTO createProduct(@Valid ProductDTO productDTO, Long categoryId) {
+    public ProductDTO createProduct( ProductDTO productDTO, Long categoryId) {
+        //validating category creation
+        String productName =productDTO.getProductName();
+        Optional<Product> existingProduct = productRepository.findByProductName(productName);
+        if(existingProduct.isPresent()){
+            throw new ApiException("Cannot create this Product !! Product Already Exists");
+        }
+
         Product product = modelMapper.map(productDTO,Product.class);
         //get the category and map relationship
         Category category = CategoryRepository.findById(categoryId).orElseThrow(
@@ -56,8 +65,11 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponse gellAll() {
+
         //fetch all the products from repository
         List<Product> products = productRepository.findAll();
+            //validation
+            if(products.isEmpty()) throw new ApiException("Response Can't Generate !! List is Empty");
         //convert it to productDTO objects
         List<ProductDTO> productDTOS = new ArrayList<>();
         for(Product product : products){
@@ -73,6 +85,9 @@ public class ProductServiceImpl implements ProductService{
     public ProductResponse getProductsByCategoryName(String name) {
         //fetch all the products from repository
         List<Product> products = productRepository.findByCategoryName(name);
+                 //validation
+                 if(products.isEmpty()) throw new ApiException("Response Can't Generate !! List is Empty");
+
         //convert it to productDTO objects
         List<ProductDTO> productDTOS = new ArrayList<>();
         for(Product product : products){
@@ -88,6 +103,9 @@ public class ProductServiceImpl implements ProductService{
     public ProductResponse findBykeyword(String keyword) {
         //fetch all the products from repository
         List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%'+keyword+'%');
+             //validation
+             if(products.isEmpty()) throw new ApiException("Response Can't Generate !! List is Empty");
+
         //convert it to productDTO objects
         List<ProductDTO> productDTOS = new ArrayList<>();
         for(Product product : products){
