@@ -1,5 +1,6 @@
 package com.ecommerce.Ecommerce_App.controller;
 
+import com.ecommerce.Ecommerce_App.Configuration.AppConstants;
 import com.ecommerce.Ecommerce_App.DTOs.ProductDTO;
 import com.ecommerce.Ecommerce_App.DTOs.ProductResponse;
 import com.ecommerce.Ecommerce_App.Model.Product;
@@ -33,20 +34,35 @@ public class ProductController {
 
     //endpoint to get all the products
     @GetMapping("/public/products")
-    public ResponseEntity<ProductResponse> getAllProducts (){
-        return new ResponseEntity<>(productService.gellAll() , HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getAllProducts (
+            @RequestParam(name = "pageNumber" , required = false , defaultValue = AppConstants.Page_Number) Integer pageNumber,
+            @RequestParam(name = "pageSize", required = false , defaultValue = AppConstants.Page_Size) Integer pageSize,
+            @RequestParam(name = "sortBy" , required = false ,defaultValue = AppConstants.Sort_Categories_By) String sortBy,
+            @RequestParam(name = "sortOrder" , required = false , defaultValue = AppConstants.Sort_Categories_Order) String sortOrder
+    ){
+        return new ResponseEntity<>(productService.gellAll(pageNumber,pageSize ,sortBy ,sortOrder) , HttpStatus.OK);
     }
 
     //get products by category name
     @GetMapping("/public/productsByCategory")
-    public ResponseEntity<ProductResponse> getProductsByCategoryName (@RequestParam(name = "name") String name){
-        return new ResponseEntity<>(productService.getProductsByCategoryName(name) , HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getProductsByCategoryName (@RequestParam(name = "name") String name,
+        @RequestParam(name = "pageNumber" , required = false , defaultValue = AppConstants.Page_Number) Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false , defaultValue = AppConstants.Page_Size) Integer pageSize,
+        @RequestParam(name = "sortBy" , required = false ,defaultValue = AppConstants.Sort_Categories_By) String sortBy,
+        @RequestParam(name = "sortOrder" , required = false , defaultValue = AppConstants.Sort_Categories_Order) String sortOrder
+    ){
+        return new ResponseEntity<>(productService.getProductsByCategoryName(name,pageNumber,pageSize ,sortBy ,sortOrder) , HttpStatus.OK);
     }
 
     //get products by keyword
     @GetMapping("/public/products/keyword/{keyword}")
-    public ResponseEntity<ProductResponse> getProductsByKeyword(@PathVariable String keyword){
-        return new ResponseEntity<>(productService.findBykeyword(keyword), HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getProductsByKeyword(@PathVariable String keyword,
+                                                                @RequestParam(name = "pageNumber" , required = false , defaultValue = AppConstants.Page_Number) Integer pageNumber,
+                                                                @RequestParam(name = "pageSize", required = false , defaultValue = AppConstants.Page_Size) Integer pageSize,
+                                                                @RequestParam(name = "sortBy" , required = false ,defaultValue = AppConstants.Sort_Categories_By) String sortBy,
+                                                                @RequestParam(name = "sortOrder" , required = false , defaultValue = AppConstants.Sort_Categories_Order) String sortOrder
+                                                                ){
+        return new ResponseEntity<>(productService.findBykeyword(keyword,pageNumber,pageSize ,sortBy ,sortOrder), HttpStatus.OK);
     }
 
     //endpoint to update product

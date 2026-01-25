@@ -17,7 +17,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long productId;
     @NotEmpty(message = "This field cannot be blank")
-    @Min(value = 2 , message = "this field at-least have 2 characters")
+    @Size(min = 2 , message = "this field at-least have 2 characters")
     private String productName;
     @NotEmpty(message = "This field cannot be blank")
     @Size(min = 5 , message = "this field at-least have 5 characters")

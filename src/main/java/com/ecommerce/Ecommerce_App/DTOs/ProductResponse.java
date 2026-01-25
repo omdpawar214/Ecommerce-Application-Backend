@@ -14,4 +14,11 @@ import java.util.List;
 @Builder
 public class ProductResponse {
     private List<ProductDTO> content;
+
+    //including page metadata for frontend
+    private Integer pageNumber;
+    private Integer pageSize;
+    private Long totalElements;
+    private Integer totalPages;
+    private boolean lastPage;
 }

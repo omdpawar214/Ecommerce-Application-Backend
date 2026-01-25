@@ -8,21 +8,20 @@ import com.ecommerce.Ecommerce_App.Model.Category;
 import com.ecommerce.Ecommerce_App.Model.Product;
 import com.ecommerce.Ecommerce_App.repository.CategoryRepository;
 import com.ecommerce.Ecommerce_App.repository.ProductRepository;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -64,10 +63,15 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductResponse gellAll() {
+    public ProductResponse gellAll(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        //pagination and sorting logic
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
+        Page<Product> ProductPage = productRepository.findAll(pageDetails);
+        List<Product> products = ProductPage.getContent();
 
-        //fetch all the products from repository
-        List<Product> products = productRepository.findAll();
             //validation
             if(products.isEmpty()) throw new ApiException("Response Can't Generate !! List is Empty");
         //convert it to productDTO objects
@@ -75,16 +79,27 @@ public class ProductServiceImpl implements ProductService{
         for(Product product : products){
             productDTOS.add(modelMapper.map(product,ProductDTO.class));
         }
-        //return the response
+        //return the response with pagination details
         ProductResponse response = new ProductResponse();
         response.setContent(productDTOS);
+        response.setPageNumber(ProductPage.getNumber());
+        response.setPageSize(ProductPage.getSize());
+        response.setTotalPages(ProductPage.getTotalPages());
+        response.setTotalElements(ProductPage.getTotalElements());
+        response.setLastPage(ProductPage.isLast());
+
         return response;
     }
 
     @Override
-    public ProductResponse getProductsByCategoryName(String name) {
-        //fetch all the products from repository
-        List<Product> products = productRepository.findByCategoryName(name);
+    public ProductResponse getProductsByCategoryName(String name, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        //pagination and sorting logic
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
+        Page<Product> ProductPage = productRepository.findAll(pageDetails);
+        List<Product> products = ProductPage.getContent();
                  //validation
                  if(products.isEmpty()) throw new ApiException("Response Can't Generate !! List is Empty");
 
@@ -96,13 +111,23 @@ public class ProductServiceImpl implements ProductService{
         //return the response
         ProductResponse response = new ProductResponse();
         response.setContent(productDTOS);
+        response.setPageNumber(ProductPage.getNumber());
+        response.setPageSize(ProductPage.getSize());
+        response.setTotalPages(ProductPage.getTotalPages());
+        response.setTotalElements(ProductPage.getTotalElements());
+        response.setLastPage(ProductPage.isLast());
         return response;
     }
 
     @Override
-    public ProductResponse findBykeyword(String keyword) {
-        //fetch all the products from repository
-        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%'+keyword+'%');
+    public ProductResponse findBykeyword(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        //pagination and sorting logic
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
+        Page<Product> ProductPage = productRepository.findByProductNameLikeIgnoreCase('%'+keyword+'%' , pageDetails);
+        List<Product> products = ProductPage.getContent();
              //validation
              if(products.isEmpty()) throw new ApiException("Response Can't Generate !! List is Empty");
 
@@ -114,6 +139,12 @@ public class ProductServiceImpl implements ProductService{
         //return the response
         ProductResponse response = new ProductResponse();
         response.setContent(productDTOS);
+        response.setContent(productDTOS);
+        response.setPageNumber(ProductPage.getNumber());
+        response.setPageSize(ProductPage.getSize());
+        response.setTotalPages(ProductPage.getTotalPages());
+        response.setTotalElements(ProductPage.getTotalElements());
+        response.setLastPage(ProductPage.isLast());
         return response;
     }
 
