@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor
 public class Role {
     @Id

@@ -14,7 +14,6 @@ import java.util.List;
 @Entity
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor
 @Table(name = "users",
         uniqueConstraints = {
@@ -41,4 +40,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> userRoles;
+
+    //to relate products to the user as seller
+    @OneToMany(mappedBy = "user" , cascade = {CascadeType.PERSIST,CascadeType.MERGE}
+        , orphanRemoval = true
+    )
+    private List<Product> products;
+
 }
