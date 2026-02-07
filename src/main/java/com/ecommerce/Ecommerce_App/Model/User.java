@@ -3,12 +3,10 @@ package com.ecommerce.Ecommerce_App.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,9 +40,20 @@ public class User {
     private List<Role> userRoles;
 
     //to relate products to the user as seller
+    @ToString.Exclude
     @OneToMany(mappedBy = "user" , cascade = {CascadeType.PERSIST,CascadeType.MERGE}
         , orphanRemoval = true
     )
     private List<Product> products;
+
+    //to relate addresses to the users
+    @Getter
+    @Setter
+    @ManyToMany(cascade = {CascadeType.PERSIST ,CascadeType.MERGE})
+    @JoinTable(name = "User_address",
+        joinColumns = @JoinColumn(name = "UserId"),
+            inverseJoinColumns = @JoinColumn(name = "address_Id")
+    )
+    private List<Address> Addresses  = new ArrayList<>();
 
 }
