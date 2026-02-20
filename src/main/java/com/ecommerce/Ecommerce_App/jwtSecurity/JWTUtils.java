@@ -21,9 +21,9 @@ public class JWTUtils {
 
 
     @Value("${spring.app.ExpirationPeriodMs}")
-     private int ExpirationPeriodMs;
+     private  int ExpirationPeriodMs;
     @Value("${spring.app.jwtSecret}")
-    private String jwtSecret;
+    private static String jwtSecret;
 
     //extract jwt from headers
     public String getJWTFromHeader(HttpServletRequest request){
@@ -35,7 +35,7 @@ public class JWTUtils {
         return null;
     }
     //generating token from username
-    public String generateTokenFromUserName(UserDetails userDetails) {
+    public  String generateTokenFromUserName(UserDetails userDetails) {
         String username = userDetails.getUsername();
         return Jwts.builder()
                 .subject(username)
@@ -52,7 +52,7 @@ public class JWTUtils {
                 .getPayload().getSubject();
     }
     //generate sign-in key
-    public Key key(){
+    public static Key key(){
         return Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(jwtSecret)
         );
