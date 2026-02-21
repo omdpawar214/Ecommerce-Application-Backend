@@ -1,9 +1,19 @@
 package com.ecommerce.Ecommerce_App.controller;
 
+import com.ecommerce.Ecommerce_App.DTOs.MessageResponse;
+import com.ecommerce.Ecommerce_App.DTOs.SignUpRequest;
+import com.ecommerce.Ecommerce_App.Model.Role;
+import com.ecommerce.Ecommerce_App.Model.User;
+import com.ecommerce.Ecommerce_App.Model.UsersRoles;
 import com.ecommerce.Ecommerce_App.jwtSecurity.JWTUtils;
-import com.ecommerce.Ecommerce_App.jwtSecurity.LoginRequest;
-import com.ecommerce.Ecommerce_App.jwtSecurity.LoginResponse;
+import com.ecommerce.Ecommerce_App.DTOs.LoginRequest;
+import com.ecommerce.Ecommerce_App.DTOs.LoginResponse;
+import com.ecommerce.Ecommerce_App.repository.RoleRepository;
+import com.ecommerce.Ecommerce_App.repository.UserRepository;
 import com.ecommerce.Ecommerce_App.securityRequirements.userDetailsImpl;
+import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
+ import com.ecommerce.Ecommerce_App.Configuration.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +22,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +40,17 @@ public class AuthenticationController {
     private JWTUtils jwtUtils;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleRepository roleRepository;
 
     //endpoint for sign-in
-    @PostMapping("/signin")
+    @PostMapping("/signIn")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
         Authentication authentication;
         try{
@@ -57,5 +77,42 @@ public class AuthenticationController {
         LoginResponse response = new LoginResponse(userDetails.getUserId(),userDetails.getUsername(),roles,jwtToken);
 
         return new ResponseEntity<>(response ,HttpStatus.ACCEPTED);
+    }
+
+    //endpoint for sign-Up
+    @PostMapping("/signUp")
+    public ResponseEntity<?> signUpTheUser( @Valid @RequestBody SignUpRequest signUpRequest){
+      //if user are already exists
+        if (userRepository.existsByUserName(signUpRequest.getUserName()) || userRepository.existsByEmail(signUpRequest.getEmail())){
+          return new ResponseEntity<>(new MessageResponse("User Already Exists") , HttpStatus.CONFLICT);
+      }
+    User newUser = new User(signUpRequest.getUserName(),signUpRequest.getEmail(),passwordEncoder.encode(signUpRequest.getPassword()));
+        List<String> StrRoles = signUpRequest.getRoles();
+       List<Role> roles = new ArrayList<>();
+
+       if(roles == null){
+          Role role= roleRepository.findByRoleName(UsersRoles.USER);
+          roles.add(role);
+       }else {
+           StrRoles.forEach(role-> {
+               switch (role) {
+                   case "admin":
+                       Role Adminrole = roleRepository.findByRoleName(UsersRoles.ADMIN);
+                       roles.add(Adminrole);
+                       break;
+                   case "seller":
+                       Role sellerrole = roleRepository.findByRoleName(UsersRoles.SELLER);
+                       roles.add(sellerrole);
+                       break;
+                   default:
+                       Role Userrole = roleRepository.findByRoleName(UsersRoles.USER);
+                       roles.add(Userrole);
+
+               }
+           } );
+       }
+       newUser.setUserRoles(roles);
+       userRepository.save(newUser);
+       return new ResponseEntity<>(new MessageResponse("New User Added Successfully"),HttpStatus.OK);
     }
 }

@@ -3,6 +3,7 @@ package com.ecommerce.Ecommerce_App.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "users",
         uniqueConstraints = {
         @UniqueConstraint(columnNames = "userName"),@UniqueConstraint(columnNames = "email")
@@ -56,4 +58,9 @@ public class User {
     )
     private List<Address> Addresses  = new ArrayList<>();
 
+    public User(@NotBlank @Size(min = 2 ,message = "this Field must Contains at-least 2 characters") String userName, @Email String email, String password) {
+        this.userName=userName;
+        this.email=email;
+        this.password=password;
+    }
 }
