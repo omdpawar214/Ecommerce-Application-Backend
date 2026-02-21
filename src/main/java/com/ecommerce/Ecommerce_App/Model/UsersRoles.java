@@ -1,5 +1,5 @@
 package com.ecommerce.Ecommerce_App.Model;
 
 public enum UsersRoles {
-    USER,ADMIN,SELLER
+    ROLE_USER,ROLE_ADMIN,ROLE_SELLER
 }

@@ -25,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthenticationController {
 
     @Autowired
@@ -91,21 +93,21 @@ public class AuthenticationController {
        List<Role> roles = new ArrayList<>();
 
        if(roles == null){
-          Role role= roleRepository.findByRoleName(UsersRoles.USER);
+          Role role= roleRepository.findByRoleName(UsersRoles.ROLE_USER);
           roles.add(role);
        }else {
            StrRoles.forEach(role-> {
                switch (role) {
                    case "admin":
-                       Role Adminrole = roleRepository.findByRoleName(UsersRoles.ADMIN);
+                       Role Adminrole = roleRepository.findByRoleName(UsersRoles.ROLE_ADMIN);
                        roles.add(Adminrole);
                        break;
                    case "seller":
-                       Role sellerrole = roleRepository.findByRoleName(UsersRoles.SELLER);
+                       Role sellerrole = roleRepository.findByRoleName(UsersRoles.ROLE_SELLER);
                        roles.add(sellerrole);
                        break;
                    default:
-                       Role Userrole = roleRepository.findByRoleName(UsersRoles.USER);
+                       Role Userrole = roleRepository.findByRoleName(UsersRoles.ROLE_USER);
                        roles.add(Userrole);
 
                }
