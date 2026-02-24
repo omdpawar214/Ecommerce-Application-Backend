@@ -17,7 +17,7 @@ import java.util.List;
 public class SignUpRequest {
     @NotBlank
     @Size(min = 2 ,message = "this Field must Contains at-least 2 characters")
-    private String UserName;
+    private String userName;
     @Email
     private String email;
     private String password;

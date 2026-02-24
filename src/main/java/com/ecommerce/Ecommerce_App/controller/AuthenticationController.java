@@ -92,7 +92,7 @@ public class AuthenticationController {
         List<String> StrRoles = signUpRequest.getRoles();
        List<Role> roles = new ArrayList<>();
 
-       if(roles == null){
+       if(StrRoles == null){
           Role role= roleRepository.findByRole(UsersRoles.ROLE_USER);
           roles.add(role);
        }else {
