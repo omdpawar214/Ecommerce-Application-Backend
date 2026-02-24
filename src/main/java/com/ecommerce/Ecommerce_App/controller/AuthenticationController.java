@@ -93,21 +93,21 @@ public class AuthenticationController {
        List<Role> roles = new ArrayList<>();
 
        if(roles == null){
-          Role role= roleRepository.findByRoleName(UsersRoles.ROLE_USER);
+          Role role= roleRepository.findByRole(UsersRoles.ROLE_USER);
           roles.add(role);
        }else {
            StrRoles.forEach(role-> {
                switch (role) {
                    case "admin":
-                       Role Adminrole = roleRepository.findByRoleName(UsersRoles.ROLE_ADMIN);
+                       Role Adminrole = roleRepository.findByRole(UsersRoles.ROLE_ADMIN);
                        roles.add(Adminrole);
                        break;
                    case "seller":
-                       Role sellerrole = roleRepository.findByRoleName(UsersRoles.ROLE_SELLER);
+                       Role sellerrole = roleRepository.findByRole(UsersRoles.ROLE_SELLER);
                        roles.add(sellerrole);
                        break;
                    default:
-                       Role Userrole = roleRepository.findByRoleName(UsersRoles.ROLE_USER);
+                       Role Userrole = roleRepository.findByRole(UsersRoles.ROLE_USER);
                        roles.add(Userrole);
 
                }

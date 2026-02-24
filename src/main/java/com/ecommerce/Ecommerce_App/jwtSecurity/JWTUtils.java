@@ -23,7 +23,7 @@ public class JWTUtils {
     @Value("${spring.app.ExpirationPeriodMs}")
      private  int ExpirationPeriodMs;
     @Value("${spring.app.jwtSecret}")
-    private static String jwtSecret;
+    private String jwtSecret;
 
     //extract jwt from headers
     public String getJWTFromHeader(HttpServletRequest request){
@@ -52,7 +52,7 @@ public class JWTUtils {
                 .getPayload().getSubject();
     }
     //generate sign-in key
-    public static Key key(){
+    public Key key(){
         return Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(jwtSecret)
         );

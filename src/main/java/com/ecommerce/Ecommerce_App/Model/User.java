@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Table(name = "users",
         uniqueConstraints = {
         @UniqueConstraint(columnNames = "userName"),@UniqueConstraint(columnNames = "email")
