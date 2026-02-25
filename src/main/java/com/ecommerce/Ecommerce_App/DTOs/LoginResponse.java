@@ -15,6 +15,12 @@ public class LoginResponse {
         this.token = token;
     }
 
+    public LoginResponse(Long id, String username, List<String> roles) {
+        this.id = id;
+        this.username = username;
+        this.roles = roles;
+    }
+
     public Long getId() {
         return id;
     }

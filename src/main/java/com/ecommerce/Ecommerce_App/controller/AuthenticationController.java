@@ -15,7 +15,9 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
  import com.ecommerce.Ecommerce_App.Configuration.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -70,15 +72,15 @@ public class AuthenticationController {
 
         userDetailsImpl userDetails = (userDetailsImpl) authentication.getPrincipal();
 
-        String jwtToken = jwtUtils.generateTokenFromUserName(userDetails);
+        ResponseCookie cookie = jwtUtils.generateJwtCookie(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        LoginResponse response = new LoginResponse(userDetails.getUserId(),userDetails.getUsername(),roles,jwtToken);
+        LoginResponse response = new LoginResponse(userDetails.getUserId(),userDetails.getUsername(),roles);
 
-        return new ResponseEntity<>(response ,HttpStatus.ACCEPTED);
+      return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString()).body(response);
     }
 
     //endpoint for sign-Up
