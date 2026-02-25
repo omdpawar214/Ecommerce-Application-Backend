@@ -1,6 +1,5 @@
-package com.ecommerce.Ecommerce_App.DTOs;
+package com.ecommerce.Ecommerce_App.DTOs.categoryDTOs;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 
 import java.util.List;

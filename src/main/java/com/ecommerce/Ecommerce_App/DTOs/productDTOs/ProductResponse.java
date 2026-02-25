@@ -1,6 +1,5 @@
-package com.ecommerce.Ecommerce_App.DTOs;
+package com.ecommerce.Ecommerce_App.DTOs.productDTOs;
 
-import com.ecommerce.Ecommerce_App.Model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

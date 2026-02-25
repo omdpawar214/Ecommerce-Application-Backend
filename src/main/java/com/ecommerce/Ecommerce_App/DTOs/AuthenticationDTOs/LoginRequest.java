@@ -1,4 +1,4 @@
-package com.ecommerce.Ecommerce_App.DTOs;
+package com.ecommerce.Ecommerce_App.DTOs.AuthenticationDTOs;
 
 public class LoginRequest {
     private String username;

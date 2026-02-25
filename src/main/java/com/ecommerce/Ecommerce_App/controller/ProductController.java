@@ -1,9 +1,8 @@
 package com.ecommerce.Ecommerce_App.controller;
 
 import com.ecommerce.Ecommerce_App.Configuration.AppConstants;
-import com.ecommerce.Ecommerce_App.DTOs.ProductDTO;
-import com.ecommerce.Ecommerce_App.DTOs.ProductResponse;
-import com.ecommerce.Ecommerce_App.Model.Product;
+import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductDTO;
+import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductResponse;
 import com.ecommerce.Ecommerce_App.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

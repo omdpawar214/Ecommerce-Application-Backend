@@ -1,7 +1,7 @@
 package com.ecommerce.Ecommerce_App.service;
 
-import com.ecommerce.Ecommerce_App.DTOs.ProductDTO;
-import com.ecommerce.Ecommerce_App.DTOs.ProductResponse;
+import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductDTO;
+import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 

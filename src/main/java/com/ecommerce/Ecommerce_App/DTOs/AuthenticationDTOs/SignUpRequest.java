@@ -1,4 +1,4 @@
-package com.ecommerce.Ecommerce_App.DTOs;
+package com.ecommerce.Ecommerce_App.DTOs.AuthenticationDTOs;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 

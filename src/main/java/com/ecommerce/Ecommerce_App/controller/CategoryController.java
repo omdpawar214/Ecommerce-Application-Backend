@@ -1,19 +1,14 @@
 package com.ecommerce.Ecommerce_App.controller;
 
 import com.ecommerce.Ecommerce_App.Configuration.AppConstants;
-import com.ecommerce.Ecommerce_App.DTOs.CategoryDTO;
-import com.ecommerce.Ecommerce_App.DTOs.CategoryResponse;
-import com.ecommerce.Ecommerce_App.Model.Category;
+import com.ecommerce.Ecommerce_App.DTOs.categoryDTOs.CategoryDTO;
+import com.ecommerce.Ecommerce_App.DTOs.categoryDTOs.CategoryResponse;
 import com.ecommerce.Ecommerce_App.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")

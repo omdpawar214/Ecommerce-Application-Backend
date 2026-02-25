@@ -1,7 +1,7 @@
 package com.ecommerce.Ecommerce_App.service;
 
-import com.ecommerce.Ecommerce_App.DTOs.CategoryDTO;
-import com.ecommerce.Ecommerce_App.DTOs.CategoryResponse;
+import com.ecommerce.Ecommerce_App.DTOs.categoryDTOs.CategoryDTO;
+import com.ecommerce.Ecommerce_App.DTOs.categoryDTOs.CategoryResponse;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ApiException;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.Ecommerce_App.Model.Category;
@@ -12,9 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;

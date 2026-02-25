@@ -1,7 +1,7 @@
 package com.ecommerce.Ecommerce_App.service;
 
-import com.ecommerce.Ecommerce_App.DTOs.ProductDTO;
-import com.ecommerce.Ecommerce_App.DTOs.ProductResponse;
+import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductDTO;
+import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductResponse;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ApiException;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.Ecommerce_App.Model.Category;

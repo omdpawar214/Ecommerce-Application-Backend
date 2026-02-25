@@ -1,19 +1,17 @@
 package com.ecommerce.Ecommerce_App.controller;
-
 import com.ecommerce.Ecommerce_App.DTOs.MessageResponse;
-import com.ecommerce.Ecommerce_App.DTOs.SignUpRequest;
+import com.ecommerce.Ecommerce_App.DTOs.AuthenticationDTOs.SignUpRequest;
 import com.ecommerce.Ecommerce_App.Model.Role;
 import com.ecommerce.Ecommerce_App.Model.User;
 import com.ecommerce.Ecommerce_App.Model.UsersRoles;
 import com.ecommerce.Ecommerce_App.jwtSecurity.JWTUtils;
-import com.ecommerce.Ecommerce_App.DTOs.LoginRequest;
-import com.ecommerce.Ecommerce_App.DTOs.LoginResponse;
+import com.ecommerce.Ecommerce_App.DTOs.AuthenticationDTOs.LoginRequest;
+import com.ecommerce.Ecommerce_App.DTOs.AuthenticationDTOs.LoginResponse;
 import com.ecommerce.Ecommerce_App.repository.RoleRepository;
 import com.ecommerce.Ecommerce_App.repository.UserRepository;
 import com.ecommerce.Ecommerce_App.securityRequirements.userDetailsImpl;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
- import com.ecommerce.Ecommerce_App.Configuration.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
