@@ -23,10 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,5 +136,12 @@ public class AuthenticationController {
         LoginResponse response = new LoginResponse(userDetails.getUserId(),userDetails.getUsername(),roles);
 
         return ResponseEntity.ok().body(response);
+    }
+
+    //signOut the current user
+    @GetMapping("/signOut")
+    public ResponseEntity<?> signOutUser(){
+        ResponseCookie cookie = jwtUtils.generateFreshJwtCookie();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString()).body(new MessageResponse("User has SignedOut"));
     }
 }

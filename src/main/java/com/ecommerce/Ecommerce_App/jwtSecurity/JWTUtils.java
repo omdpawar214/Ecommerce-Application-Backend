@@ -43,6 +43,7 @@ public class JWTUtils {
 
     //extracting JWT-token from Cookie request
     public String getJwtFromCookie(HttpServletRequest request) {
+        System.out.println("jwt token is extracted from cookie");
         Cookie cookie = WebUtils.getCookie(request,MyCookie);
         if(cookie!=null){
             return cookie.getValue();
@@ -52,6 +53,7 @@ public class JWTUtils {
     }
     // generating jwt for the valid user and the pack token as cookie
     public ResponseCookie generateJwtCookie(userDetailsImpl userPrincipal){
+        System.out.println("Cookie has generated successfully");
         String jwt = generateTokenFromUserName(userPrincipal.getUsername());
         ResponseCookie cookie = ResponseCookie.from(MyCookie,jwt)
                 .path("/api")
@@ -61,8 +63,17 @@ public class JWTUtils {
         return cookie;
     }
 
+    //generating empty cookie for logout endpoint
+    public ResponseCookie generateFreshJwtCookie(){
+        ResponseCookie cookie = ResponseCookie.from(MyCookie,null)
+                .path("/api")
+                .build();
+        return cookie;
+    }
+
     //generating token from username
     public  String generateTokenFromUserName(String username) {
+        System.out.println("jwt token is generated for current user");
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
@@ -87,7 +98,7 @@ public class JWTUtils {
     //validate jwt token
     public boolean validate(String authToken ){
         try{
-            System.out.println("validate");
+            System.out.println("validated jwt token for current user");
             Jwts.parser()
                     .verifyWith( (SecretKey) key())
                     .build()

@@ -30,12 +30,7 @@ public class AuthFilterToken extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.debug("Authentication token call for url {}",request.getRequestURL());
-        String path = request.getServletPath();
 
-        if (path.startsWith("/api/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         try{
             String JWToken = parseJwt(request);
             if(JWToken!=null && jwtUtils.validate(JWToken)){
@@ -46,6 +41,7 @@ public class AuthFilterToken extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                System.out.println("Authentication set in spring context");
                 logger.debug("Roles for jwt {}",userDetails.getAuthorities());
             }
         }catch (Exception e){
