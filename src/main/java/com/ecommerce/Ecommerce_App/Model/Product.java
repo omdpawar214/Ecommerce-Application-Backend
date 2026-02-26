@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,4 +38,7 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "Seller_Id")
     private User user;
+
+    @OneToMany(mappedBy = "product" ,cascade = {CascadeType.MERGE,CascadeType.PERSIST} , fetch = FetchType.EAGER)
+    private List<CartItem> products = new ArrayList<>();
 }

@@ -55,6 +55,11 @@ public class User {
     )
     private List<Address> Addresses  = new ArrayList<>();
 
+    //to map user to the cart
+    @ToString.Exclude
+    @OneToOne(mappedBy = "user" , cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    private Cart cart;
+
     public User(@NotBlank @Size(min = 2 ,message = "this Field must Contains at-least 2 characters") String userName, @Email String email, String password) {
         this.userName=userName;
         this.email=email;
