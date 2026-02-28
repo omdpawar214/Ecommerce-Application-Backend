@@ -98,7 +98,7 @@ public class ProductServiceImpl implements ProductService{
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
-        Page<Product> ProductPage = productRepository.findAll(pageDetails);
+        Page<Product> ProductPage = productRepository.findByCategory_Name(name,pageDetails);
         List<Product> products = ProductPage.getContent();
                  //validation
                  if(products.isEmpty()) throw new ApiException("Response Can't Generate !! List is Empty");
