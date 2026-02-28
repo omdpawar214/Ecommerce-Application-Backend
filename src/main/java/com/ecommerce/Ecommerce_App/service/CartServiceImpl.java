@@ -106,6 +106,27 @@ public class CartServiceImpl implements CartService{
         return cartDTOS;
     }
 
+    //method to fetch current users cart
+    @Override
+    public CartDTO fetchUsersCart() {
+        //get the current users cart
+        Cart cart = cartRepository.findCartByEmail(authUtils.loggedInEmail());
+        if(cart == null){
+            throw new ApiException("Current User Don't have any Cart");
+        }
+        //cover the cart object to the cartDTo object
+        CartDTO cartDTO = modelMapper.map(cart,CartDTO.class);
+        List<ProductDTO> products = new ArrayList<>();
+        List<CartItem> cartItems = cart.getItems();
+        for (CartItem cartItem: cartItems){
+            ProductDTO product= modelMapper.map(cartItem.getProduct(),ProductDTO.class);
+            product.setQuantity(cartItem.getQuantity());
+            products.add(product);
+        }
+        cartDTO.setProducts(products);
+        return cartDTO;
+    }
+
     public Cart createCart (){
         Cart currCart = cartRepository.findCartByEmail(authUtils.loggedInEmail());
         if(currCart!= null){

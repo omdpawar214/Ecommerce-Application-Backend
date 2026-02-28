@@ -29,4 +29,10 @@ public class CartController {
     public ResponseEntity<List<CartDTO>> getAllCarts(){
         return new ResponseEntity<>(cartService.fetchAllCarts() , HttpStatus.OK);
     }
+
+    //endpoint to fetch cart of current user
+    @GetMapping("/user")
+    public ResponseEntity<CartDTO> getUsersCart(){
+        return new ResponseEntity<>(cartService.fetchUsersCart(), HttpStatus.OK);
+    }
 }
