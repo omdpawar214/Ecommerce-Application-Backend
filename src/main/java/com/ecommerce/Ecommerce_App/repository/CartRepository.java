@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart,Long> {
-    @Query("select c from cart c where c.user.email = ?1")
+    @Query("select c from Cart c where c.user.email = ?1")
     Cart findCartByEmail(String email);
 }
