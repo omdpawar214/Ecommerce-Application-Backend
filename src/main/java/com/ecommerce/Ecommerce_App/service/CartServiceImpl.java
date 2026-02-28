@@ -7,6 +7,7 @@ import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.Ecommerce_App.Model.Cart;
 import com.ecommerce.Ecommerce_App.Model.CartItem;
 import com.ecommerce.Ecommerce_App.Model.Product;
+import com.ecommerce.Ecommerce_App.Utility.AuthUtils;
 import com.ecommerce.Ecommerce_App.repository.CartItemRepository;
 import com.ecommerce.Ecommerce_App.repository.CartRepository;
 import com.ecommerce.Ecommerce_App.repository.ProductRepository;
@@ -32,6 +33,7 @@ public class CartServiceImpl implements CartService{
     private CartItemRepository cartItemRepository;
     @Autowired
     private ModelMapper modelMapper;
+
 
     @Override
     public CartDTO addProductToCart(Long productId, Integer quantity) {
@@ -67,18 +69,41 @@ public class CartServiceImpl implements CartService{
         cart.setTotalPrice(cart.getTotalPrice()+(product.getSpecialPrice()*quantity));
 
         cartRepository.save(cart);
+        cart.getItems().add(newCartItem);
 
         //Creating the cartDTO object
         CartDTO cartDTO = modelMapper.map(cart,CartDTO.class);
         List<CartItem> cartItems = cart.getItems();
         Stream<ProductDTO> productDTOStream = cartItems.stream().map(item->{
-            ProductDTO map = modelMapper.map(item.getProduct(),ProductDTO.class),
-                    map.setQuantity(item.getQuantity());
+            ProductDTO map = modelMapper.map(item.getProduct(),ProductDTO.class);
+            map.setQuantity(item.getQuantity());
             return map;
         });
         cartDTO.setProducts(productDTOStream.toList());
         //returning DTO object
         return cartDTO;
+    }
+
+    //method to fetch all the carts present
+    @Override
+    public List<CartDTO> fetchAllCarts() {
+        List<Cart> carts= cartRepository.findAll();
+        if (carts.isEmpty()){
+            throw new ApiException("No cart Exist");
+        }
+        //we need to convert carts to cartDTOs with taht we also have to convert products in the list of cartItems associated with cart to the list of productDTO for CartDTO object
+        List<CartDTO> cartDTOS = new ArrayList<>();
+        for(Cart cart : carts){
+            CartDTO cartDTO = modelMapper.map(cart,CartDTO.class);
+            List<ProductDTO> products = new ArrayList<>();
+            List<CartItem> cartItems = cart.getItems();
+            for (CartItem cartItem: cartItems){
+                products.add(modelMapper.map(cartItem.getProduct(),ProductDTO.class));
+            }
+            cartDTO.setProducts(products);
+            cartDTOS.add(cartDTO);
+        }
+        return cartDTOS;
     }
 
     public Cart createCart (){
@@ -91,4 +116,4 @@ public class CartServiceImpl implements CartService{
         newCart.setUser(authUtils.loggedInUser());
         return cartRepository.save(newCart);
     }
-}
+ }
