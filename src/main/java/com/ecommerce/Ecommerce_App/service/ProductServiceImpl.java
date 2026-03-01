@@ -1,11 +1,15 @@
 package com.ecommerce.Ecommerce_App.service;
 
+import com.ecommerce.Ecommerce_App.DTOs.CartDTOs.CartDTO;
 import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductDTO;
 import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductResponse;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ApiException;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
+import com.ecommerce.Ecommerce_App.Model.Cart;
+import com.ecommerce.Ecommerce_App.Model.CartItem;
 import com.ecommerce.Ecommerce_App.Model.Category;
 import com.ecommerce.Ecommerce_App.Model.Product;
+import com.ecommerce.Ecommerce_App.repository.CartRepository;
 import com.ecommerce.Ecommerce_App.repository.CategoryRepository;
 import com.ecommerce.Ecommerce_App.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
@@ -27,6 +31,10 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService{
     @Autowired
     private FileService fileService;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private CartService cartService;
     private final ProductRepository productRepository;
     private final CategoryRepository CategoryRepository;
     private final  ModelMapper modelMapper;
@@ -160,6 +168,25 @@ public class ProductServiceImpl implements ProductService{
         product.setSpecialPrice(product.getPrice()- (product.getDiscount() *0.01) * product.getPrice());
         //save new product to repository
         Product savedProduct = productRepository.save(product);
+                //now reflecting the save product changes into the carts where this product is being used
+                    //1->fetch all carts
+                    List<Cart> carts = cartRepository.findCartsByProductId(savedProduct.getProductId());
+                    //2->convert these carts to cartDTOs
+                    List<CartDTO> cartDTOS = new ArrayList<>();
+                    for(Cart cart : carts){
+                          CartDTO cartDTO = modelMapper.map(cart,CartDTO.class);
+                          List<ProductDTO> products = new ArrayList<>();
+                          List<CartItem> cartItems = cart.getItems();
+                           for (CartItem cartItem: cartItems){
+                               ProductDTO currProduct= modelMapper.map(cartItem.getProduct(),ProductDTO.class);
+                               currProduct.setQuantity(cartItem.getQuantity());
+                               products.add(currProduct);
+                           }
+                           cartDTO.setProducts(products);
+                           cartDTOS.add(cartDTO);
+                    }
+                    //3->update all the products in the cart
+                    cartDTOS.forEach(cart->cartService.updateProductInCarts(cart.getCartId(),productId));
         //convert product to product dto
         ProductDTO UpdatedProductDTO= modelMapper.map(savedProduct,ProductDTO.class);
         //return the dto
@@ -170,6 +197,9 @@ public class ProductServiceImpl implements ProductService{
     public ProductDTO deleteProduct(Long productId) {
         //fetch teh product
         Product product = productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("Product","productId",productId));
+        //removing this product from all teh cart
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+        carts.forEach(cart -> cartService.deleteProductFromTheCart(productId));
         //detach teh connection
         product.setCategory(null);
         //remove from repository

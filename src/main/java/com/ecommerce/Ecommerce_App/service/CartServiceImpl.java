@@ -152,11 +152,9 @@ public class CartServiceImpl implements CartService{
         }
         if(operation.equals("+") && cartItem.getQuantity()+1<=product.getQuantity()){
             cartItem.setQuantity(cartItem.getQuantity()+1);
-            cartItem.setProductPrice(product.getSpecialPrice()* cartItem.getQuantity());
             cart.setTotalPrice(cart.getTotalPrice() + product.getSpecialPrice());
         }else if(operation.equals("-") && cartItem.getQuantity()-1>=0){
             cartItem.setQuantity(cartItem.getQuantity()-1);
-            cartItem.setProductPrice(product.getSpecialPrice()* cartItem.getQuantity());
             cart.setTotalPrice(cart.getTotalPrice() - product.getSpecialPrice());
         }
         //save it to the repository
@@ -204,6 +202,30 @@ public class CartServiceImpl implements CartService{
         //return message response
         return new MessageResponse("the Product with ProductId-"+productId+" has removed from cart Successfully");
      }
+
+     //method to update the productUpdates from product module and reflecting these updates into each Product into CArt
+    @Override
+    public void updateProductInCarts(Long cartId, Long productId) {
+        //fetch the cart from cartRepository
+        Cart cart = cartRepository.findById(cartId).orElseThrow(()->
+                new ApiException("Cart does not exist"));
+        //fetch the product from product repository
+        Product product =  productRepository.findById(productId).orElseThrow(()->
+                new ResourceNotFoundException("product", "productId", productId));
+        //etching cartItem in cart where product is updated product and updating the product inside those
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId,productId);
+        if(cartItem==null){
+            throw new ApiException("Product with id -"+productId+" does not exist in the users cart");
+        }
+        cart.setTotalPrice(cart.getTotalPrice() - (cartItem.getProductPrice()*cartItem.getQuantity()));
+
+        double updatedPrice = product.getSpecialPrice();
+        cartItem.setProductPrice(updatedPrice);
+
+        cart.setTotalPrice(cart.getTotalPrice() + (cartItem.getProductPrice()*cartItem.getQuantity()));
+        cartRepository.save(cart);
+        cartItemRepository.save(cartItem);
+    }
 
     public Cart createCart (){
         Cart currCart = cartRepository.findCartByEmail(authUtils.loggedInEmail());
