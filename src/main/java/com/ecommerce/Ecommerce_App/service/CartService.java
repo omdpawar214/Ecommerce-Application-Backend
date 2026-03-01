@@ -12,4 +12,6 @@ public interface CartService {
     CartDTO fetchUsersCart();
 
     CartDTO updateQuantity(Long productId, String operation);
+
+    Object deleteProductFromTheCart(Long productId);
 }

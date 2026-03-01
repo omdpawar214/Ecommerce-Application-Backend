@@ -1,6 +1,7 @@
 package com.ecommerce.Ecommerce_App.service;
 
 import com.ecommerce.Ecommerce_App.DTOs.CartDTOs.CartDTO;
+import com.ecommerce.Ecommerce_App.DTOs.MessageResponse;
 import com.ecommerce.Ecommerce_App.DTOs.productDTOs.ProductDTO;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ApiException;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
@@ -93,7 +94,7 @@ public class CartServiceImpl implements CartService{
         if (carts.isEmpty()){
             throw new ApiException("No cart Exist");
         }
-        //we need to convert carts to cartDTOs with taht we also have to convert products in the list of cartItems associated with cart to the list of productDTO for CartDTO object
+        //we need to convert carts to cartDTOs with that we also have to convert products in the list of cartItems associated with cart to the list of productDTO for CartDTO object
         List<CartDTO> cartDTOS = new ArrayList<>();
         for(Cart cart : carts){
             CartDTO cartDTO = modelMapper.map(cart,CartDTO.class);
@@ -118,7 +119,7 @@ public class CartServiceImpl implements CartService{
         if(cart == null){
             throw new ApiException("Current User Don't have any Cart");
         }
-        //cover the cart object to the cartDTo object
+        //convert the cart object to the cartDTo object
         CartDTO cartDTO = modelMapper.map(cart,CartDTO.class);
         List<ProductDTO> products = new ArrayList<>();
         List<CartItem> cartItems = cart.getItems();
@@ -178,6 +179,31 @@ public class CartServiceImpl implements CartService{
         return cartDTO;
 
     }
+
+    //method to delete the product from the cart;
+    @Transactional
+    @Override
+    public Object deleteProductFromTheCart(Long productId) {
+        //fetch the current users cart
+        Cart cart = cartRepository.findCartByEmail(authUtils.loggedInEmail());
+        if(cart==null){
+            throw new ApiException("Cart does not exist");
+        }
+        //check whether the product Exist in the cart
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cart.getCart_Id(),productId);
+        if(cartItem==null){
+            throw new ApiException("Product with id -"+productId+" does not exist in the users cart");
+        }
+        //remove the cartItem
+        cart.setTotalPrice(cart.getTotalPrice()-cartItem.getProductPrice());
+        cart.getItems().remove(cartItem);
+        cartItem.setCart(null);
+        cartItemRepository.deleteById(cartItem.getCartItemId());
+        //save the cart
+        cartRepository.save(cart);
+        //return message response
+        return new MessageResponse("the Product with ProductId-"+productId+" has removed from cart Successfully");
+     }
 
     public Cart createCart (){
         Cart currCart = cartRepository.findCartByEmail(authUtils.loggedInEmail());
