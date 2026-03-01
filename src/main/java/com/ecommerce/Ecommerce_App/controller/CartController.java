@@ -5,6 +5,7 @@ import com.ecommerce.Ecommerce_App.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +32,15 @@ public class CartController {
     }
 
     //endpoint to fetch cart of current user
-    @GetMapping("/user")
+    @GetMapping("/users/cart")
     public ResponseEntity<CartDTO> getUsersCart(){
         return new ResponseEntity<>(cartService.fetchUsersCart(), HttpStatus.OK);
+    }
+
+    //endpoint to update the quantity of the products in cart
+    @PutMapping("/products/{productId}/quantity/{operation}")
+    public ResponseEntity<CartDTO> updateQuantity(@PathVariable Long productId,
+                                                    @PathVariable String operation){
+        return new ResponseEntity<>(cartService.updateQuantity(productId,operation), HttpStatus.OK);
     }
 }

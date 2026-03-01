@@ -11,6 +11,8 @@ import com.ecommerce.Ecommerce_App.Utility.AuthUtils;
 import com.ecommerce.Ecommerce_App.repository.CartItemRepository;
 import com.ecommerce.Ecommerce_App.repository.CartRepository;
 import com.ecommerce.Ecommerce_App.repository.ProductRepository;
+import jakarta.transaction.Transactional;
+import org.aspectj.weaver.AjAttribute;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,7 +100,9 @@ public class CartServiceImpl implements CartService{
             List<ProductDTO> products = new ArrayList<>();
             List<CartItem> cartItems = cart.getItems();
             for (CartItem cartItem: cartItems){
-                products.add(modelMapper.map(cartItem.getProduct(),ProductDTO.class));
+                ProductDTO product= modelMapper.map(cartItem.getProduct(),ProductDTO.class);
+                product.setQuantity(cartItem.getQuantity());
+                products.add(product);
             }
             cartDTO.setProducts(products);
             cartDTOS.add(cartDTO);
@@ -125,6 +129,54 @@ public class CartServiceImpl implements CartService{
         }
         cartDTO.setProducts(products);
         return cartDTO;
+    }
+
+    //method to update the quantity of the product inside the cart
+    @Override
+    @Transactional
+    public CartDTO updateQuantity(Long productId, String operation) {
+
+        //get the current user cart
+        Cart cart = cartRepository.findCartByEmail(authUtils.loggedInEmail());
+        if(cart==null){
+            throw new ApiException("Cart does not exist");
+        }
+        //validate if product exist
+        Product product =  productRepository.findById(productId).orElseThrow(()->
+                new ResourceNotFoundException("product", "productId", productId));
+        //get the cart item and update the quantity
+        CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cart.getCart_Id(),productId);
+        if(cartItem==null){
+            throw new ApiException("Product with id -"+productId+" does not exist in the users cart");
+        }
+        if(operation.equals("+") && cartItem.getQuantity()+1<=product.getQuantity()){
+            cartItem.setQuantity(cartItem.getQuantity()+1);
+            cartItem.setProductPrice(product.getSpecialPrice()* cartItem.getQuantity());
+            cart.setTotalPrice(cart.getTotalPrice() + product.getSpecialPrice());
+        }else if(operation.equals("-") && cartItem.getQuantity()-1>=0){
+            cartItem.setQuantity(cartItem.getQuantity()-1);
+            cartItem.setProductPrice(product.getSpecialPrice()* cartItem.getQuantity());
+            cart.setTotalPrice(cart.getTotalPrice() - product.getSpecialPrice());
+        }
+        //save it to the repository
+        CartItem UpdatedCartItem = cartItemRepository.save(cartItem);
+        if(UpdatedCartItem.getQuantity()==0){
+            cart.getItems().remove(cartItem);
+            cartItemRepository.deleteById(cartItem.getCartItemId());
+        }
+        cartRepository.save(cart);
+        //return cartDTO
+        CartDTO cartDTO = modelMapper.map(cart,CartDTO.class);
+        List<ProductDTO> products = new ArrayList<>();
+        List<CartItem> cartItems = cart.getItems();
+        for (CartItem currCartItem: cartItems){
+            ProductDTO productDTO= modelMapper.map(currCartItem.getProduct(),ProductDTO.class);
+            productDTO.setQuantity(currCartItem.getQuantity());
+            products.add(productDTO);
+        }
+        cartDTO.setProducts(products);
+        return cartDTO;
+
     }
 
     public Cart createCart (){
