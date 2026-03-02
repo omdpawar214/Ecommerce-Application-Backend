@@ -9,6 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AddressServiceImpl implements AddressService{
     //Required dependencies
@@ -32,5 +35,18 @@ public class AddressServiceImpl implements AddressService{
         Address savedAddress = addressRepository.save(address);
         //convert this saved address to addressDTO
         return modelMapper.map(savedAddress,AddressDTO.class);
+    }
+
+    @Override
+    public List<AddressDTO> getAllAddresses() {
+        //get all the address
+        List<Address> addresses = addressRepository.findAll();
+        //convert all the addresses to addressDTOs
+        List<AddressDTO> addressDTOS = new ArrayList<>();
+        for (Address address: addresses){
+            addressDTOS.add(modelMapper.map(address,AddressDTO.class));
+        }
+        //return this list
+        return addressDTOS;
     }
 }
