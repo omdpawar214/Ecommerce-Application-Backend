@@ -1,6 +1,8 @@
 package com.ecommerce.Ecommerce_App.service;
 
 import com.ecommerce.Ecommerce_App.DTOs.AddressDTO;
+import com.ecommerce.Ecommerce_App.ExceptionHandler.ApiException;
+import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.Ecommerce_App.Model.Address;
 import com.ecommerce.Ecommerce_App.Model.User;
 import com.ecommerce.Ecommerce_App.Utility.AuthUtils;
@@ -41,6 +43,30 @@ public class AddressServiceImpl implements AddressService{
     public List<AddressDTO> getAllAddresses() {
         //get all the address
         List<Address> addresses = addressRepository.findAll();
+        //convert all the addresses to addressDTOs
+        List<AddressDTO> addressDTOS = new ArrayList<>();
+        for (Address address: addresses){
+            addressDTOS.add(modelMapper.map(address,AddressDTO.class));
+        }
+        //return this list
+        return addressDTOS;
+    }
+
+    @Override
+    public AddressDTO getAddressById(Long addressId) {
+        Address address = addressRepository.findById(addressId).orElseThrow(()->
+                new ResourceNotFoundException("Address","AddressID",addressId));
+        return modelMapper.map(address,AddressDTO.class);
+    }
+
+    @Override
+    public List<AddressDTO> getAllUsersAddresses() {
+        User user = authUtils.loggedInUser();
+        //fetch all teh user Addresses based on user Id
+        List<Address> addresses = user.getAddresses();
+        if(addresses.isEmpty()){
+            throw new ApiException("No Address is Associated With this user");
+        }
         //convert all the addresses to addressDTOs
         List<AddressDTO> addressDTOS = new ArrayList<>();
         for (Address address: addresses){
