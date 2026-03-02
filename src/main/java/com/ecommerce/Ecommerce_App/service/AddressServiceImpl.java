@@ -1,12 +1,14 @@
 package com.ecommerce.Ecommerce_App.service;
 
 import com.ecommerce.Ecommerce_App.DTOs.AddressDTO;
+import com.ecommerce.Ecommerce_App.DTOs.MessageResponse;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ApiException;
 import com.ecommerce.Ecommerce_App.ExceptionHandler.ResourceNotFoundException;
 import com.ecommerce.Ecommerce_App.Model.Address;
 import com.ecommerce.Ecommerce_App.Model.User;
 import com.ecommerce.Ecommerce_App.Utility.AuthUtils;
 import com.ecommerce.Ecommerce_App.repository.AddressRepository;
+import com.ecommerce.Ecommerce_App.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class AddressServiceImpl implements AddressService{
     private AddressRepository addressRepository;
     @Autowired
     private AuthUtils authUtils;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public AddressDTO createAddress(AddressDTO addressDTO) {
@@ -96,6 +100,24 @@ public class AddressServiceImpl implements AddressService{
         user.getAddresses().removeIf(address -> address.getAddressId().equals(addressId));
         user.getAddresses().add(savedAddress);
 
+        userRepository.save(user);
+
         return modelMapper.map(savedAddress,AddressDTO.class);
+    }
+
+    @Override
+    public Object deleteAddressById(Long addressId) {
+        //fetch the address
+        Address address = addressRepository.findById(addressId).orElseThrow(()->
+                new ResourceNotFoundException("Address","AddressID",addressId) );
+        //remove the associations
+        User user = authUtils.loggedInUser();
+        user.getAddresses().removeIf(address1 -> address1.getAddressId().equals(addressId));
+        address.setUser(null);
+        userRepository.save(user);
+
+        addressRepository.delete(address);
+        //return message
+        return new MessageResponse("the address with id -"+addressId+" has been removed successfully");
     }
 }
