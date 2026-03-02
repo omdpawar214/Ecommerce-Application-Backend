@@ -75,4 +75,27 @@ public class AddressServiceImpl implements AddressService{
         //return this list
         return addressDTOS;
     }
+
+    @Override
+    public AddressDTO updateAddress(AddressDTO addressDTO, Long addressId) {
+        //get address by id
+        Address currAddress = addressRepository.findById(addressId).orElseThrow(()->
+                new ResourceNotFoundException("Address","AddressID",addressId));
+        //update the required fields
+        currAddress.setCity(addressDTO.getCity());
+        currAddress.setState(addressDTO.getStreet());
+        currAddress.setState(addressDTO.getState());
+        currAddress.setCountry(addressDTO.getCountry());
+        currAddress.setBuildingName(addressDTO.getBuildingName());
+        currAddress.setPinCode(addressDTO.getPinCode());
+
+
+        //save the address again
+        Address savedAddress = addressRepository.save(currAddress);
+        User user = authUtils.loggedInUser();
+        user.getAddresses().removeIf(address -> address.getAddressId().equals(addressId));
+        user.getAddresses().add(savedAddress);
+
+        return modelMapper.map(savedAddress,AddressDTO.class);
+    }
 }
