@@ -37,9 +37,9 @@ public class Address {
     @Size(min = 6 , message = "address pin-code must be at-least 5 characters")
     private String pinCode;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "Addresses")
-    private List<User> user  = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_Id")
+    private User user;
 
 
     public Address(String street, String buildingName, String city, String country, String state, String pinCode) {

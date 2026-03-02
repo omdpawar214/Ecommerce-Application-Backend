@@ -48,11 +48,7 @@ public class User {
     //to relate addresses to the users
     @Getter
     @Setter
-    @ManyToMany(cascade = {CascadeType.PERSIST ,CascadeType.MERGE})
-    @JoinTable(name = "User_address",
-        joinColumns = @JoinColumn(name = "UserId"),
-            inverseJoinColumns = @JoinColumn(name = "address_Id")
-    )
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST ,CascadeType.MERGE},orphanRemoval = true)
     private List<Address> Addresses  = new ArrayList<>();
 
     //to map user to the cart
