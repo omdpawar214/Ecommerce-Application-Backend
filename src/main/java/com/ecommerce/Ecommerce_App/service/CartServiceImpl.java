@@ -193,10 +193,10 @@ public class CartServiceImpl implements CartService{
             throw new ApiException("Product with id -"+productId+" does not exist in the users cart");
         }
         //remove the cartItem
-        cart.setTotalPrice(cart.getTotalPrice()-cartItem.getProductPrice());
+        cart.setTotalPrice(cart.getTotalPrice()-(cartItem.getProductPrice()* cartItem.getQuantity()));
         cart.getItems().remove(cartItem);
-        cartItem.setCart(null);
-        cartItemRepository.deleteById(cartItem.getCartItemId());
+        //cartItem.setCart(null);
+        cartItemRepository.delete(cartItem);
         //save the cart
         cartRepository.save(cart);
         //return message response
