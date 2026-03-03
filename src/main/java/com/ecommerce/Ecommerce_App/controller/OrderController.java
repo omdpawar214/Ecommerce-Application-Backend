@@ -26,7 +26,7 @@ public class OrderController {
                 orderRequest.getPgStatus(),
                 orderRequest.getPgPaymentId(),
                 orderRequest.getPgResponseMessage()
-        )
+        );
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 }
